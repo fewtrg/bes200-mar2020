@@ -26,15 +26,7 @@ namespace LibraryApi.Controllers
         {
             bool didUpdate = await Mapper.UpdateNumberOfPages(
                 id, newPages);
-
-            if (didUpdate)
-            {
-                return NoContent();
-            }
-            else
-            {
-                return NotFound();
-            }
+            return this.Either<NoContentResult, NotFoundResult;
                 
 
         }
