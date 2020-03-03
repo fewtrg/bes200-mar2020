@@ -68,37 +68,8 @@ namespace LibraryApi.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<GetABookResponse>> AddABook([FromBody] PostBooksRequest bookToAdd)
         {
-            // 1. Decide if it is worthy. (validate it)
-            //    If Not, send a 400 Bad Request
-            // 2. Add it the database.
-            // 3. Return:
-            //    a 201 Created 
-            //    Location header with the URL of the newly created resource (like a birth announcment)
-            //    Just attach a copy of whatever they would get by following the location header.
-
-            if(!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-            var book = new Book
-            {
-                Title = bookToAdd.Title,
-                Author = bookToAdd.Author,
-                Genre = bookToAdd.Genre,
-                InInventory = true,
-                NumberOfPages = bookToAdd.NumberOfPages
-            };
-            Context.Books.Add(book);
-            await Context.SaveChangesAsync();
-            var response = new GetABookResponse
-            {
-                Id = book.Id,
-                Title = book.Title,
-                Author = book.Author,
-                Genre = book.Genre,
-                NumberOfPages = book.NumberOfPages
-            };
-            return CreatedAtRoute("books#getabook", new { id = book.Id }, response);
+            GetABookResponse response = await Mapper.AddABook(bookToAdd);
+            return CreatedAtRoute("books#getabook", new { id = response.Id }, response);
         }
 
 
@@ -132,9 +103,9 @@ namespace LibraryApi.Controllers
         [HttpGet("books")]
         public async Task<ActionResult<GetBooksResponse>> GetAllBooks([FromQuery] string genre = "all")
         {
-          
 
-            var response = new GetBooksResponse();
+            GetBooksResponse response = await Mapper.GetAllBooks(genre);
+           /* var response = new GetBooksResponse();
             var data = GetBooksInInventory();
 
             if(genre != "all")
@@ -144,7 +115,7 @@ namespace LibraryApi.Controllers
               response.Data = await data.Select(b => new BookSummaryItem {  Id = b.Id, Title=b.Title, Author = b.Author})
                 .ToListAsync();
             response.Genre = genre;
-            return Ok(response);
+            return Ok(response);*/
         }
 
        

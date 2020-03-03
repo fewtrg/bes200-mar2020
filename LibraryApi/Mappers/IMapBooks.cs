@@ -6,5 +6,7 @@ namespace LibraryApi
     public interface IMapBooks
     {
         Task<GetABookResponse> GetBookById(int id);
+        Task<GetBooksResponse> GetAllBooks(string genre);
+        Task<GetABookResponse> AddABook(PostBooksRequest bookToAdd);
     }
 }

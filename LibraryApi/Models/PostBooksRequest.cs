@@ -28,6 +28,10 @@ namespace LibraryApi.Models
                     new string[] { "Title", "Author" });
             }
         }
+
+        internal class Book
+        {
+        }
     }
 
 }
