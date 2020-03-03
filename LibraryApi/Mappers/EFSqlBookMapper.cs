@@ -39,10 +39,34 @@ namespace LibraryApi.Mappers
             throw new NotImplementedException();
         }
 
-        public async Task<GetBooksResponse> GetAllBooks(string genre)
+       public async Task<bool> UpdateNumberOfPages(int id, int newPages)
         {
-            var response = new GetBooksResponse();
-            var data
+            var book = await GetBooksInInventory()
+                .Where(b => b.Id == id)
+                .SingleOrDefaultAsync();
+            if (book == null)
+            {
+                return false;
+            }
+            else
+            {
+                book.NumberOfPages = newPages;
+                await Context.SaveChangesAsync();
+                return true;
+            }
+        }
+
+        public async Task Remove(int id)
+        {
+            var book = await GetBooksInInventory()
+                .Where(b => b.Id == id)
+                .SingleOrDefaultAsync();
+
+            if(book != null)
+            {
+                book.InInventory = false;
+                await Context.SaveChangesAsync();
+            }
         }
     }
 }

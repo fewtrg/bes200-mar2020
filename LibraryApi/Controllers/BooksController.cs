@@ -1,5 +1,6 @@
 ﻿using LibraryApi.Domain;
 using LibraryApi.Models;
+using LibraryApi.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -12,13 +13,10 @@ namespace LibraryApi.Controllers
 {
     public class BooksController : Controller
     {
-        LibraryDataContext Context;
+       // LibraryDataContext Context;
         IMapBooks Mapper;
 
-
-        public BooksController(LibraryDataContext context, IMapBooks mapper)
-        {
-            Context = context;
+        public BooksController(IMapBooks mapper)  {
             Mapper = mapper;
         }
 
@@ -26,33 +24,25 @@ namespace LibraryApi.Controllers
         [HttpPut("books/{id:int}/numberofpages")]
         public async Task<ActionResult> UpdateNumberOfPages(int id, [FromBody] int newPages)
         {
-            var book = await GetBooksInInventory()
-                .Where(b => b.Id == id)
-                .SingleOrDefaultAsync();
-            if(book == null)
+            bool didUpdate = await Mapper.UpdateNumberOfPages(
+                id, newPages);
+
+            if (didUpdate)
             {
-                return NotFound();
-            } else
-            {
-                book.NumberOfPages = newPages;
-                await Context.SaveChangesAsync();
                 return NoContent();
             }
+            else
+            {
+                return NotFound();
+            }
+                
 
         }
 
         [HttpDelete("books/{id:int}")]
         public async Task<ActionResult> RemoveABook(int id)
         {
-            var book = await GetBooksInInventory()
-                .Where(b => b.Id == id)
-                .SingleOrDefaultAsync();
-
-            if(book != null)
-            {
-                book.InInventory = false;
-                await Context.SaveChangesAsync();
-            }
+            await Mapper.Remove(id);
             return NoContent();
         }
 
@@ -88,15 +78,17 @@ namespace LibraryApi.Controllers
                 }).SingleOrDefaultAsync();*/
 
             GetABookResponse response = await Mapper.GetBookById(id);
-             
 
-            if(response == null)
+
+            if (response == null)
             {
                 return NotFound();
-            } else
+            }
+            else
             {
                 return Ok(response);
             }
+
 
         }
 

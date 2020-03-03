@@ -8,5 +8,7 @@ namespace LibraryApi
         Task<GetABookResponse> GetBookById(int id);
         Task<GetBooksResponse> GetAllBooks(string genre);
         Task<GetABookResponse> AddABook(PostBooksRequest bookToAdd);
+        Task<bool> UpdateNumberOfPages(int id, int newPages);
+        Task Remove(int id);
     }
 }
