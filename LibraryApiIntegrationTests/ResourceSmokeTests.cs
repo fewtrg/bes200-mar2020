@@ -31,14 +31,13 @@ namespace LibraryApiIntegrationTests
         [Fact]
         public async Task GetBookOne()
         {
-            var book1 = await Client.GetAsync("/book/1");
+            var book1 = await Client.GetAsync("/books/1");
             var content = await book1.Content.ReadAsAsync<GetABookResponse>();
 
             Assert.Equal(HttpStatusCode.OK, book1.StatusCode);
             Assert.Equal("application/json", book1.Content.Headers.ContentType.MediaType);
 
             Assert.Equal("Walden", content.title);
-            //check all the properties
 
         }
 
