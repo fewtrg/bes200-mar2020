@@ -1,31 +1,28 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using AutoMapper;
+﻿using AutoMapper;
 using LibraryApi.Domain;
 using LibraryApi.Models;
 using Microsoft.EntityFrameworkCore;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace LibraryApi.Mappers
 {
-    public class EFSqlBookMapper : IMapBooks
+    public class EfSqlBookMapper : IMapBooks
     {
         LibraryDataContext Context;
         IMapper Mapper;
 
-        public EFSqlBookMapper()
+        public EfSqlBookMapper(LibraryDataContext context, IMapper mapper)
         {
             Context = context;
             Mapper = mapper;
         }
 
-        public IQueryable<Book> GetBooksInInventory()
+        private IQueryable<Book> GetBooksInInventory()
         {
             return Context.Books.Where(b => b.InInventory);
         }
-
-        public async Task<GetABookResponse> GetABook(int id)
+        public async Task<GetABookResponse> GetBookById(int id)
         {
             var response = await GetBooksInInventory()
                 .Where(b => b.Id == id)
@@ -34,12 +31,32 @@ namespace LibraryApi.Mappers
             return response;
         }
 
-        public Task<GetABookResponse> GetBookById(int id)
+        public async Task<GetBooksResponse> GetAllBooks(string genre)
         {
-            throw new NotImplementedException();
+
+            var response = new GetBooksResponse();
+            var data = GetBooksInInventory();
+
+            if (genre != "all")
+            {
+                data = data.Where(b => b.Genre == genre);
+            }
+            response.Data = await data.Select(b => Mapper.Map<BookSummaryItem>(b))
+              .ToListAsync();
+            response.Genre = genre;
+            return response;
         }
 
-       public async Task<bool> UpdateNumberOfPages(int id, int newPages)
+        public async Task<GetABookResponse> AddABook(PostBooksRequest bookToAdd)
+        {
+            var book = Mapper.Map<Book>(bookToAdd);
+            Context.Books.Add(book);
+            await Context.SaveChangesAsync();
+            var response = Mapper.Map<GetABookResponse>(book);
+            return response;
+        }
+
+        public async Task<bool> UpdateNumberOfPages(int id, int newPages)
         {
             var book = await GetBooksInInventory()
                 .Where(b => b.Id == id)
@@ -59,10 +76,10 @@ namespace LibraryApi.Mappers
         public async Task Remove(int id)
         {
             var book = await GetBooksInInventory()
-                .Where(b => b.Id == id)
-                .SingleOrDefaultAsync();
+               .Where(b => b.Id == id)
+               .SingleOrDefaultAsync();
 
-            if(book != null)
+            if (book != null)
             {
                 book.InInventory = false;
                 await Context.SaveChangesAsync();

@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
-using System.Linq;
+
 using System.Threading.Tasks;
 
 namespace LibraryApi.Services
@@ -13,23 +13,26 @@ namespace LibraryApi.Services
             if (entity == null)
             {
                 return new NotFoundResult();
-
-            } else
+            }
+            else
             {
                 return new OkObjectResult(entity);
-
             }
         }
 
         public static ActionResult Either<Some, None>(this Controller controller, bool condition)
             where Some : ActionResult, new()
-            where None : ActionResult, new() {
-
-            if (condition) {
+            where None : ActionResult, new()
+        {
+            if (condition)
+            {
                 return new Some();
-            } else {
+            }
+            else
+            {
                 return new None();
             }
-        } 
-    }
 
+        }
+    }
+}

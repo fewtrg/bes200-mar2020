@@ -17,7 +17,6 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using AutoMapper;
-
 namespace LibraryApi
 {
     public class Startup
@@ -35,11 +34,11 @@ namespace LibraryApi
 
             services.AddAutoMapper(typeof(Startup));
             services.AddTransient<IGenerateEmployeeIds, EmployeeIdGenerator>();
-            services.AddScoped<IMapBooks, EFSqlBookMapper>();
+            services.AddScoped<IMapBooks, EfSqlBookMapper>();
             services.AddControllers();
             services.AddDbContext<LibraryDataContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("LibraryDatabase"))
-                // Don't do this!
+            // Don't do this!
             );
 
             services.AddSwaggerGen(c =>

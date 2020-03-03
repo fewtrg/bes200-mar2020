@@ -13,21 +13,19 @@ namespace LibraryApi.Controllers
 {
     public class BooksController : Controller
     {
-       // LibraryDataContext Context;
+
         IMapBooks Mapper;
 
-        public BooksController(IMapBooks mapper)  {
+        public BooksController(IMapBooks mapper)
+        {
             Mapper = mapper;
         }
-
 
         [HttpPut("books/{id:int}/numberofpages")]
         public async Task<ActionResult> UpdateNumberOfPages(int id, [FromBody] int newPages)
         {
-            bool didUpdate = await Mapper.UpdateNumberOfPages(
-                id, newPages);
-            return this.Either<NoContentResult, NotFoundResult;
-                
+            bool didUpdate = await Mapper.UpdateNumberOfPages(id, newPages);
+            return this.Either<NoContentResult, NotFoundResult>(didUpdate);
 
         }
 
@@ -48,6 +46,7 @@ namespace LibraryApi.Controllers
         [Produces("application/json")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ValidateModel]
         public async Task<ActionResult<GetABookResponse>> AddABook([FromBody] PostBooksRequest bookToAdd)
         {
             GetABookResponse response = await Mapper.AddABook(bookToAdd);
@@ -55,57 +54,21 @@ namespace LibraryApi.Controllers
         }
 
 
-        [HttpGet("books/{id:int}", Name ="books#getabook")]
+        [HttpGet("books/{id:int}", Name = "books#getabook")]
         public async Task<ActionResult<GetABookResponse>> GetABook(int id)
         {
-            /*var response = await GetBooksInInventory()
-                .Where(b => b.Id == id)
-                .Select(b => new GetABookResponse
-                {
-                    Id = b.Id,
-                    Title = b.Title,
-                    Author = b.Author,
-                    Genre = b.Genre,
-                    NumberOfPages = b.NumberOfPages
-                }).SingleOrDefaultAsync();*/
-
             GetABookResponse response = await Mapper.GetBookById(id);
 
-
-            if (response == null)
-            {
-                return NotFound();
-            }
-            else
-            {
-                return Ok(response);
-            }
-
+            return this.Maybe(response);
 
         }
 
         [HttpGet("books")]
         public async Task<ActionResult<GetBooksResponse>> GetAllBooks([FromQuery] string genre = "all")
         {
-
             GetBooksResponse response = await Mapper.GetAllBooks(genre);
-           /* var response = new GetBooksResponse();
-            var data = GetBooksInInventory();
-
-            if(genre != "all")
-            {
-                data = data.Where(b => b.Genre == genre);
-            }
-              response.Data = await data.Select(b => new BookSummaryItem {  Id = b.Id, Title=b.Title, Author = b.Author})
-                .ToListAsync();
-            response.Genre = genre;
-            return Ok(response);*/
+            return response;
         }
 
-       
-        private IQueryable<Book> GetBooksInInventory()
-        {
-            return Context.Books.Where(b => b.InInventory);
-        }
     }
 }

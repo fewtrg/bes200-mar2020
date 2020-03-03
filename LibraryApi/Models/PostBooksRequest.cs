@@ -17,20 +17,16 @@ namespace LibraryApi.Models
         [MaxLength(50)]
         public string Genre { get; set; } = "None Specified";
 
-        [Range(1,int.MaxValue)]
+        [Range(1, int.MaxValue)]
         public int NumberOfPages { get; set; }
 
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {
-            if(Title.ToLower() == "it" && Author.ToLower() == "king")
+            if (Title.ToLower() == "it" && Author.ToLower() == "king")
             {
                 yield return new ValidationResult("That book is inappropriate for school",
                     new string[] { "Title", "Author" });
             }
-        }
-
-        internal class Book
-        {
         }
     }
 

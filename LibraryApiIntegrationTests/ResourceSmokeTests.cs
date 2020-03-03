@@ -21,7 +21,7 @@ namespace LibraryApiIntegrationTests
         [Theory]
         [InlineData("/books")]
         [InlineData("/books/1")]
-        //[InlineData("/books/99")]  -> should fail
+        //[InlineData("/books/99")]
         public async Task GetResourceAndSeeIfTheyAreAlive(string resource)
         {
             var response = await Client.GetAsync(resource);
@@ -38,6 +38,7 @@ namespace LibraryApiIntegrationTests
             Assert.Equal("application/json", book1.Content.Headers.ContentType.MediaType);
 
             Assert.Equal("Walden", content.title);
+            // check all the properties.
 
         }
 
@@ -47,7 +48,7 @@ namespace LibraryApiIntegrationTests
             var bookToAdd = new PostBookRequest
             {
                 author = "Smith",
-                title = "Efficient use of virtual machines in the cloud",
+                title = "Effecient Use of Virtual Machines in the Cloud",
                 genre = "fiction",
                 numberOfPages = 3
             };
@@ -62,31 +63,28 @@ namespace LibraryApiIntegrationTests
 
             Assert.Equal(bookToAdd.title, responseData.title);
             Assert.Equal(bookToAdd.author, responseData.author);
-
         }
 
-    }
-
-        public class PostBookRequest
-        {
-            public int id { get; set; }
-            public string title { get; set; }
-            public string author { get; set; }
-            public string genre { get; set; }
-            public int numberOfPages { get; set; }
-        }
-
-        public class GetABookResponse
-        {
-            public int id { get; set; }
-            public string title { get; set; }
-            public string author { get; set; }
-            public string genre { get; set; }
-            public int numberOfPages { get; set; }
-        }
 
     }
 
 
+    public class PostBookRequest
+    {
+        public string title { get; set; }
+        public string author { get; set; }
+        public string genre { get; set; }
+        public int numberOfPages { get; set; }
+    }
 
 
+    public class GetABookResponse
+    {
+        public int id { get; set; }
+        public string title { get; set; }
+        public string author { get; set; }
+        public string genre { get; set; }
+        public int numberOfPages { get; set; }
+    }
+
+}
