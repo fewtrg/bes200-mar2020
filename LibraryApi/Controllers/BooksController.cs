@@ -13,10 +13,13 @@ namespace LibraryApi.Controllers
     public class BooksController : Controller
     {
         LibraryDataContext Context;
+        IMapBooks Mapper;
 
-        public BooksController(LibraryDataContext context)
+
+        public BooksController(LibraryDataContext context, IMapBooks mapper)
         {
             Context = context;
+            Mapper = mapper;
         }
 
 
@@ -102,7 +105,7 @@ namespace LibraryApi.Controllers
         [HttpGet("books/{id:int}", Name ="books#getabook")]
         public async Task<ActionResult<GetABookResponse>> GetABook(int id)
         {
-            var response = await GetBooksInInventory()
+            /*var response = await GetBooksInInventory()
                 .Where(b => b.Id == id)
                 .Select(b => new GetABookResponse
                 {
@@ -111,7 +114,10 @@ namespace LibraryApi.Controllers
                     Author = b.Author,
                     Genre = b.Genre,
                     NumberOfPages = b.NumberOfPages
-                }).SingleOrDefaultAsync();
+                }).SingleOrDefaultAsync();*/
+
+            GetABookResponse response = await Mapper.GetBookById(id);
+             
 
             if(response == null)
             {

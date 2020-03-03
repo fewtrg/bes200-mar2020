@@ -5,6 +5,7 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using LibraryApi.Domain;
+using LibraryApi.Mappers;
 using LibraryApi.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -32,6 +33,7 @@ namespace LibraryApi
         {
 
             services.AddTransient<IGenerateEmployeeIds, EmployeeIdGenerator>();
+            services.AddScoped<IMapBooks, EFSqlBookMapper>();
             services.AddControllers();
             services.AddDbContext<LibraryDataContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("LibraryDatabase"))
