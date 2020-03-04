@@ -9,6 +9,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LibraryApiIntegrationTests"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ApiClient", "ApiClient\ApiClient.csproj", "{4A428C9C-AB75-45A3-8865-BBA275555F77}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RabbitMqUtils", "bes200-rabbitmqutils\RabbitMqUtils.csproj", "{655237F4-237A-4AC7-BC67-AE8D7EB28269}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{4A428C9C-AB75-45A3-8865-BBA275555F77}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4A428C9C-AB75-45A3-8865-BBA275555F77}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4A428C9C-AB75-45A3-8865-BBA275555F77}.Release|Any CPU.Build.0 = Release|Any CPU
+		{655237F4-237A-4AC7-BC67-AE8D7EB28269}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{655237F4-237A-4AC7-BC67-AE8D7EB28269}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{655237F4-237A-4AC7-BC67-AE8D7EB28269}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{655237F4-237A-4AC7-BC67-AE8D7EB28269}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
