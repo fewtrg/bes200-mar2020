@@ -17,6 +17,8 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using AutoMapper;
+using System.Text.Json.Serialization;
+
 namespace LibraryApi
 {
     public class Startup
@@ -35,7 +37,12 @@ namespace LibraryApi
             services.AddAutoMapper(typeof(Startup));
             services.AddTransient<IGenerateEmployeeIds, EmployeeIdGenerator>();
             services.AddScoped<IMapBooks, EfSqlBookMapper>();
-            services.AddControllers();
+            services.AddControllers()
+                .AddJsonOptions(options =>
+                {
+                    options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+                    options.JsonSerializerOptions.IgnoreNullValues = true;
+                });
             services.AddDbContext<LibraryDataContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("LibraryDatabase"))
             // Don't do this!
