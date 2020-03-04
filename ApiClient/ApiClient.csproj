@@ -8,6 +8,7 @@
   <ItemGroup>
     <PackageReference Include="cachecow.client" Version="2.7.2" />
     <PackageReference Include="cachecow.client.rediscachestore" Version="2.7.2" />
+    <PackageReference Include="Microsoft.extensions.caching.redis" Version="2.2.0" />
   </ItemGroup>
 
 </Project>

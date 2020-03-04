@@ -12,6 +12,13 @@ export class AppComponent {
   constructor(private client: HttpClient) {}
 
   updateTime() {
+
     this.time = new Date().toISOString();
+
+    this.client.get<{data: string}>('http://localhost:1337/time')
+      .subscribe(r => {
+        this.time = r.data;
+    });
+
   }
 }
