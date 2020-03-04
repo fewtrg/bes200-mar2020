@@ -9,24 +9,24 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
-
 namespace LibraryApi.Controllers
 {
 
-    public class ReservationController : Controller
+    public class ReservationsController : Controller
     {
-        LibraryDataContext Context;
-        ISendMessagesToTheReservationProcesser Processor;
 
-        public ReservationController(LibraryDataContext context)
+        LibraryDataContext Context;
+        ISendMessagesToTheReservationProcessor Processor;
+
+        public ReservationsController(LibraryDataContext context, ISendMessagesToTheReservationProcessor processor)
         {
             Context = context;
+            Processor = processor;
         }
 
         [HttpPost("reservations")]
         [ValidateModel]
-
-        public async Task<ActionResult>AddAReservation([FromBody] PostReservationRequest reservation)
+        public async Task<ActionResult> AddAReservation([FromBody] PostReservationRequest reservation)
         {
             var reservationToSave = new Reservation
             {
@@ -35,49 +35,48 @@ namespace LibraryApi.Controllers
                 ReservationCreated = DateTime.Now,
                 Status = ReservationStatus.Pending
             };
-            //TODO write to the MQ
+
             Context.Reservations.Add(reservationToSave);
             await Context.SaveChangesAsync();
             var response = MapIt(reservationToSave);
             Processor.SendReservationForProcessing(response);
 
-            return Ok(response);
+            return Ok(response); // TODO: Make it a 201 with a location header.
+
         }
-
-
-
 
         [HttpGet("reservations")]
         public async Task<ActionResult> GetAllReservations()
         {
             var response = new HttpCollection<GetReservationItemResponse>();
-
-            var data = await Context.Reservation.ToListAsync();
+            var data = await Context.Reservations.ToListAsync();
             response.Data = data.Select(r => MapIt(r)).ToList();
-
             return Ok(response);
         }
-        [HttpGet("reservations/pending")]
 
+        [HttpGet("reservations/pending")]
+        public async Task<ActionResult> GetPendingReservations()
+        {
+            var response = new HttpCollection<GetReservationItemResponse>();
+            var data = await Context.Reservations.Where(r => r.Status == ReservationStatus.Pending).ToListAsync();
+            response.Data = data.Select(r => MapIt(r)).ToList();
+            return Ok(response);
+        }
+        [HttpGet("reservations/approved")]
         public async Task<ActionResult> GetApprovedReservations()
         {
             var response = new HttpCollection<GetReservationItemResponse>();
-
-            var data = await Context.Reservation.Where(r => r.Status == ReservationStatus.Approved).ToListAsync();
+            var data = await Context.Reservations.Where(r => r.Status == ReservationStatus.Approved).ToListAsync();
             response.Data = data.Select(r => MapIt(r)).ToList();
-
             return Ok(response);
         }
 
         [HttpGet("reservations/cancelled")]
-
         public async Task<ActionResult> GetCancelledReservations()
         {
             var response = new HttpCollection<GetReservationItemResponse>();
-
-            var data = await Context.Reservation.Where(r => r.Status == ReservationStatus.Cancelled).ToListAsync();
+            var data = await Context.Reservations.Where(r => r.Status == ReservationStatus.Cancelled).ToListAsync();
             response.Data = data.Select(r => MapIt(r)).ToList();
-
             return Ok(response);
         }
 
@@ -89,12 +88,9 @@ namespace LibraryApi.Controllers
                 For = r.For,
                 ReservationCreated = r.ReservationCreated,
                 Books = r.Books.Split(',')
-                .Select(id => Url.ActionLink("books#getabook", "Books", new { id = id })).ToList(),
+                .Select(id => Url.ActionLink("GetABook", "Books", new { id })).ToList(),
                 Status = r.Status
             };
         }
     }
 }
-
-
-    

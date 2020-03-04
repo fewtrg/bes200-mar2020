@@ -1,24 +1,19 @@
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Threading.Tasks;
+using AutoMapper;
 using LibraryApi.Domain;
 using LibraryApi.Mappers;
 using LibraryApi.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
-using AutoMapper;
-using System.Text.Json.Serialization;
 using RabbitMqUtils;
+using System;
+using System.IO;
+using System.Reflection;
+using System.Text.Json.Serialization;
 
 namespace LibraryApi
 {
@@ -34,9 +29,10 @@ namespace LibraryApi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+
             services.AddRabbit(Configuration);
 
-            services.AddScoped<ISendMessagesTotheReservationProcessor, RabbitMqReservationProcessor>();
+            services.AddScoped<ISendMessagesToTheReservationProcessor, RabbitMqReservationProcessor>();
             services.AddAutoMapper(typeof(Startup));
             services.AddTransient<IGenerateEmployeeIds, EmployeeIdGenerator>();
             services.AddScoped<IMapBooks, EfSqlBookMapper>();
@@ -46,6 +42,7 @@ namespace LibraryApi
                     options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
                     options.JsonSerializerOptions.IgnoreNullValues = true;
                 });
+
             services.AddDbContext<LibraryDataContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("LibraryDatabase"))
             // Don't do this!
@@ -68,15 +65,15 @@ namespace LibraryApi
                 var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
                 var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
                 c.IncludeXmlComments(xmlPath);
-            });
 
+
+            });
             services.AddDistributedRedisCache(options =>
             {
                 options.Configuration = Configuration.GetValue<string>("redisHost");
             });
 
             services.AddResponseCaching();
-       
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -92,9 +89,8 @@ namespace LibraryApi
                 options.AllowAnyOrigin();
                 options.AllowAnyMethod();
                 options.AllowAnyHeader();
-            //options.AllowCredentials();
+                //options.AllowCredentials();
             });
-
 
             app.UseSwagger();
             app.UseSwaggerUI(c =>

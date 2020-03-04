@@ -1,13 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using LibraryApi.Models;
 using RabbitMqUtils;
-using LibraryApi.Models;
+
 
 namespace LibraryApi.Services
 {
-    public class RabbitMqReservationProcessor
+    public class RabbitMqReservationProcessor : ISendMessagesToTheReservationProcessor
     {
         IRabbitManager Manager;
 
@@ -19,7 +16,6 @@ namespace LibraryApi.Services
         public void SendReservationForProcessing(GetReservationItemResponse reservation)
         {
             Manager.Publish(reservation, "", "direct", "reservations");
-
         }
     }
 }

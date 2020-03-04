@@ -10,9 +10,8 @@ namespace LibraryApi.Models
     {
         [Required]
         public string For { get; set; }
-
         [Required]
-        public string[] Books { get; set; }
+        public string[] Books { get; set; } // []
 
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {

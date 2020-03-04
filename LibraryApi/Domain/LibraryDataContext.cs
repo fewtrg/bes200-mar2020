@@ -8,8 +8,7 @@ namespace LibraryApi.Domain
 
         public LibraryDataContext(DbContextOptions<LibraryDataContext> ctx) : base(ctx) { }
         public DbSet<Book> Books { get; set; }
-        public DbSet<Reservation>Reservation { get; set; }
-        public object Reservations { get; internal set; }
+        public DbSet<Reservation> Reservations { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -20,9 +19,9 @@ namespace LibraryApi.Domain
             // etc. etc.
 
             modelBuilder.Entity<Book>().HasData(
-                    new Book {  Id = 1, Title = "Walden", Author="Thoreau", Genre="Philosophy", NumberOfPages = 32, InInventory = true},
-                    new Book {  Id = 2, Title="In the Penal Colony", Author="Franz Kafka", Genre="Fiction", NumberOfPages = 180, InInventory = true },
-                    new Book {  Id = 3, Title = "The Trial", Author="Franz Kafka", Genre="Fiction", NumberOfPages = 223, InInventory = true }
+                    new Book { Id = 1, Title = "Walden", Author = "Thoreau", Genre = "Philosophy", NumberOfPages = 322, InInventory = true },
+                    new Book { Id = 2, Title = "In the Penal Colony", Author = "Franz Kafka", Genre = "Fiction", NumberOfPages = 180, InInventory = true },
+                    new Book { Id = 3, Title = "The Trial", Author = "Franz Kafka", Genre = "Fiction", NumberOfPages = 223, InInventory = true }
                 );
         }
     }

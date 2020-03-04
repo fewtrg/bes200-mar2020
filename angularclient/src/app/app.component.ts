@@ -8,17 +8,20 @@ import { HttpClient } from '@angular/common/http';
 })
 export class AppComponent {
   time: string;
+  url = 'http://localhost:1337/time';
 
   constructor(private client: HttpClient) {}
 
   updateTime() {
-
-    this.time = new Date().toISOString();
-
-    this.client.get<{data: string}>('http://localhost:1337/time')
+    this.client.get<{ data: string }>(this.url)
       .subscribe(r => {
+        console.log(r.data);
         this.time = r.data;
-    });
+      });
+  }
 
+  changeUrl() {
+    this.url = 'http://localhost:1337/Time';
   }
 }
+ 

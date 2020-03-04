@@ -9,11 +9,11 @@ namespace ApiClient
     {
         static void Main(string[] args)
         {
-            Console.BackgroundColor = ConsoleColor.Black;
-            Console.ForegroundColor = ConsoleColor.DarkYellow;
+            Console.BackgroundColor = ConsoleColor.DarkGreen;
+            Console.ForegroundColor = ConsoleColor.Black;
             Console.Clear();
 
-            // var client = new HttpClient();
+            //var client = new HttpClient();
             var client = ClientExtensions.CreateClient(new RedisStore("localhost:6379"));
             client.BaseAddress = new Uri("http://localhost:1337");
             while (true)
