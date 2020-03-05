@@ -24,6 +24,40 @@ namespace LibraryApi.Controllers
             Processor = processor;
         }
 
+        [HttpPost("reservations/approved")]
+        [ValidateModel]
+        public async Task<ActionResult> ReservationApproved([FromBody] GetReservationItemResponse req)
+        {
+            var reservation = await Context.Reservations.Where(r => r.Id == req.Id).SingleOrDefaultAsync();
+            if(reservation == null)
+            {
+                return BadRequest("No pending reservation");
+            }
+            else
+            {
+                reservation.Status = ReservationStatus.Approved;
+                await Context.SaveChangesAsync();
+                return Accepted(); //NoContent()
+            }
+        }
+
+        [HttpPost("reservations/cancelled")]
+        [ValidateModel]
+        public async Task<ActionResult> ReservationCancelled([FromBody] GetReservationItemResponse req)
+        {
+            var reservation = await Context.Reservations.Where(r => r.Id == req.Id).SingleOrDefaultAsync();
+            if (reservation == null)
+            {
+                return BadRequest("No pending reservation");
+            }
+            else
+            {
+                reservation.Status = ReservationStatus.Cancelled;
+                await Context.SaveChangesAsync();
+                return Accepted(); //NoContent()
+            }
+        }
+
         [HttpPost("reservations")]
         [ValidateModel]
         public async Task<ActionResult> AddAReservation([FromBody] PostReservationRequest reservation)
